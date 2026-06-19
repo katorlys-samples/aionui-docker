@@ -6,11 +6,11 @@
 </a><br> -->
 
 <h1>
-  ExampleProject
+  aionui-docker
 </h1>
 
 <p>
-  One sentence to describe your project.
+  Docker image for self-hosting AionUi
 </p>
 
 [![Pull Requests][github-pr-badge]][github-pr-link]
@@ -23,7 +23,57 @@
 <!-- Main Body -->
 
 ## Introduction
-Describe your project clearly here.
+Docker image for self-hosting AionUi - the free, open-source Cowork app with AI Agents.
+
+[AionUi](https://github.com/iOfficeAI/AionUi) is licensed under [Apache License 2.0](https://github.com/iOfficeAI/AionUi/blob/db1812ab7f90f50479e49d901c070d9a89942426/LICENSE).
+
+## Usage
+### Docker
+```sh
+docker run -d \
+  --name aionui \
+  -p 3000:25808 \
+  -e AIONUI_HOST=0.0.0.0 \
+  -e AIONUI_PORT=25808 \
+  -e AIONUI_ALLOW_REMOTE=1 \
+  -e AIONUI_OPEN_BROWSER=0 \
+  -e AIONUI_DATA_DIR=/data \
+  -e AIONUI_LOG_DIR=/logs \
+  -v ./data:/data \
+  -v ./logs:/logs \
+  aionui:latest
+```
+### Docker Compose
+```yml
+services:
+  aionui:
+    image: aionui:latest
+    container_name: aionui
+    restart: unless-stopped
+    ports:
+      - "3000:25808"
+    environment:
+      AIONUI_HOST: 0.0.0.0
+      AIONUI_PORT: 25808
+      AIONUI_ALLOW_REMOTE: "1"
+      AIONUI_OPEN_BROWSER: "0"
+      AIONUI_DATA_DIR: /data
+      AIONUI_LOG_DIR: /logs
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+```
+
+
+## Build
+Build the latest version:
+```sh
+docker build -t aionui:latest .
+```
+Build a specific AionUi version:
+```sh
+docker build --build-arg AIONUI_VERSION=2.1.20 -t aionui:2.1.20 .
+```
 
 <!-- /Main Body -->
 
@@ -39,7 +89,7 @@ Describe your project clearly here.
 <div align="center">
 
 <p>
-  Copyright &copy; 2024-present <a target="_blank" href="https://github.com/katorlys">Katorly Lab</a>
+  Copyright &copy; 2026-present <a target="_blank" href="https://github.com/katorlys">Katorly Lab</a>
 </p>
 
 [![License][github-license-badge-bottom]](LICENSE)
@@ -47,11 +97,11 @@ Describe your project clearly here.
 </div>
 
 [back-to-top-button]: https://img.shields.io/badge/BACK_TO_TOP-151515?style=flat-square
-[github-pr-badge]: https://img.shields.io/github/issues-pr/katorlys/ExampleProject?label=pulls&labelColor=151515&color=79E096&style=flat-square
-[github-pr-link]: https://github.com/katorlys/ExampleProject/pulls
-[github-issue-badge]: https://img.shields.io/github/issues/katorlys/ExampleProject?labelColor=151515&color=FFC868&style=flat-square
-[github-issue-link]: https://github.com/katorlys/ExampleProject/issues
-[github-license-badge]: https://img.shields.io/github/license/katorlys/ExampleProject?labelColor=151515&color=EFEFEF&style=flat-square
+[github-pr-badge]: https://img.shields.io/github/issues-pr/katorlys-samples/aionui-docker?label=pulls&labelColor=151515&color=79E096&style=flat-square
+[github-pr-link]: https://github.com/katorlys-samples/aionui-docker/pulls
+[github-issue-badge]: https://img.shields.io/github/issues/katorlys-samples/aionui-docker?labelColor=151515&color=FFC868&style=flat-square
+[github-issue-link]: https://github.com/katorlys-samples/aionui-docker/issues
+[github-license-badge]: https://img.shields.io/github/license/katorlys-samples/aionui-docker?labelColor=151515&color=EFEFEF&style=flat-square
 <!-- https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-EFEFEF?labelColor=151515&style=flat-square -->
-[github-license-badge-bottom]: https://img.shields.io/github/license/katorlys/ExampleProject?labelColor=151515&color=EFEFEF&style=for-the-badge
+[github-license-badge-bottom]: https://img.shields.io/github/license/katorlys-samples/aionui-docker?labelColor=151515&color=EFEFEF&style=for-the-badge
 <!-- https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-EFEFEF?labelColor=151515&style=for-the-badge -->
