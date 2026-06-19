@@ -1,0 +1,59 @@
+name: Check AionUi release
+
+on:
+  schedule:
+    - cron: "30 14 * * *" # Runs daily at 14:30 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check-release.outputs.should_build }}
+      version: ${{ steps.check-release.outputs.version }}
+
+    steps:
+      - name: Check AionUi latest version
+        id: check-release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          LATEST_TAG=$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            https://api.github.com/repos/iOfficeAI/AionUi/releases/latest | jq -r .tag_name)
+
+          if [[ -z "${LATEST_TAG}" || "${LATEST_TAG}" == "null" ]]; then
+            echo "Unable to find latest AionUi release tag" >&2
+            exit 1
+          fi
+
+          VERSION=${LATEST_TAG#v}
+
+          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+)+([.-][0-9A-Za-z][0-9A-Za-z.-]*)?$ ]]; then
+            echo "Unexpected AionUi release tag ${LATEST_TAG}" >&2
+            exit 1
+          fi
+
+          STATUS_CODE=$(curl -fsSL -o /dev/null -w "%{http_code}" \
+            "https://hub.docker.com/v2/repositories/katorlys/aionui/tags/${VERSION}/" || true)
+
+          if [[ "${STATUS_CODE}" == "200" ]]; then
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+          elif [[ "${STATUS_CODE}" == "404" ]]; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Docker Hub tag check failed with error ${STATUS_CODE}" >&2
+            exit 1
+          fi
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      version: ${{ needs.check.outputs.version }}
+    secrets: inherit
