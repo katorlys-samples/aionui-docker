@@ -27,6 +27,23 @@ Docker image for self-hosting AionUi - the free, open-source Cowork app with AI 
 
 [AionUi](https://github.com/iOfficeAI/AionUi) is licensed under [Apache License 2.0](https://github.com/iOfficeAI/AionUi/blob/db1812ab7f90f50479e49d901c070d9a89942426/LICENSE).
 
+
+## Username & password
+The default username is `admin` and to get the password, check the logs of the container when it is first started.
+```sh
+docker logs aionui
+```
+
+The username and password cannot be changed. To reset the password, simply 
+```sh
+docker exec aionui /opt/aionui-web/aionui-web resetpass --data-dir /data
+```
+For Docker Compose, use the following command to reset the password:
+```sh
+docker compose exec aionui /opt/aionui-web/aionui-web resetpass --data-dir /data
+```
+
+
 ## Usage
 ### Docker
 ```sh
@@ -41,13 +58,13 @@ docker run -d \
   -e AIONUI_LOG_DIR=/logs \
   -v ./data:/data \
   -v ./logs:/logs \
-  aionui:latest
+  katorlys/aionui:latest
 ```
 ### Docker Compose
 ```yml
 services:
   aionui:
-    image: aionui:latest
+    image: katorlys/aionui:latest
     container_name: aionui
     restart: unless-stopped
     ports:
