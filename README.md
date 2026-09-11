@@ -27,6 +27,8 @@ Docker image for self-hosting AionUi - the free, open-source Cowork app with AI 
 
 [AionUi](https://github.com/iOfficeAI/AionUi) is licensed under [Apache License 2.0](https://github.com/iOfficeAI/AionUi/blob/db1812ab7f90f50479e49d901c070d9a89942426/LICENSE).
 
+AionUi stopped publishing the standalone Web CLI tarballs to GitHub Releases after [`v2.1.47-final`](https://github.com/iOfficeAI/AionUi/releases/tag/v2.1.47-final). This image builds the standalone Web CLI from AionUi source.
+
 
 ## Username & password
 The default username is `admin` and to get the password, check the logs of the container when it is first started.
@@ -85,11 +87,11 @@ services:
 ## Build
 Build the latest version:
 ```sh
-docker build -t aionui:latest .
+docker build --platform linux/amd64,linux/arm64 -t aionui:latest .
 ```
 Build a specific AionUi version:
 ```sh
-docker build --build-arg AIONUI_VERSION=2.1.20 -t aionui:2.1.20 .
+docker build --platform linux/amd64,linux/arm64 --build-arg AIONUI_VERSION=2.1.20 -t aionui:2.1.20 .
 ```
 
 <!-- /Main Body -->
